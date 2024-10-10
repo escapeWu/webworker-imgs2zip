@@ -20,5 +20,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "src/worker.js"]
+  "include": ["src", "public/worker.js", "src/App.tsx"]
 }

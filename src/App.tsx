@@ -11,7 +11,7 @@ function App() {
 
   const handleSave = () => {
     
-    const worker = new Worker('/worker.js');
+    const worker = new Worker('worker.js');
     worker.postMessage({ files });
 
     worker.onmessage = function (e) {
