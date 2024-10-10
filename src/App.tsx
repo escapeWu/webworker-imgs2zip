@@ -2,13 +2,13 @@ import { useState } from 'react'
 
 import './App.css'
 import jszip from 'jszip'
-import {saveAs} from 'file-saver'
+import { saveAs } from 'file-saver'
 type FileObj = {
   name: string
   data: string
 }
 function App() {
-  
+
   const [files, setFiles] = useState<File[]>([])
   const handleFileChange = (event: any) => {
     setFiles(Array.from(event.target.files))
@@ -16,7 +16,7 @@ function App() {
 
   const readToBase64 = (file: File): Promise<FileObj> => {
     return new Promise((resolve, reject) => {
-      const reader =new FileReader()
+      const reader = new FileReader()
       reader.onload = e => {
         if (!e.target) {
           reject(e)
@@ -24,14 +24,14 @@ function App() {
         }
         const result = e.target.result as string;
         resolve({
-          data: result.split(",")[1], 
+          data: result.split(",")[1],
           name: file.name
         })
       }
 
       reader.readAsDataURL(file)
     })
-    
+
   }
 
   const handleSave = () => {
@@ -44,14 +44,14 @@ function App() {
       .then(files => {
         files.forEach(file => {
           console.log(file)
-          zip.file(file.name, file.data, {base64: true})
+          zip.file(file.name, file.data, { base64: true })
         })
       })
       .then(() => {
-        return zip.generateAsync({type: 'blob'})
+        return zip.generateAsync({ type: 'blob' })
       })
       .then(blobContent => {
-        saveAs(blobContent,"xx.zip")
+        saveAs(blobContent, "xx.zip")
       })
   }
   return (
@@ -61,7 +61,7 @@ function App() {
         {
           files.length ? <button onClick={handleSave}>压缩</button> : null
         }
-        
+
       </div>
     </>
   )
