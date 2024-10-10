@@ -1,33 +1,68 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+
 import './App.css'
-
+import jszip from 'jszip'
+import {saveAs} from 'file-saver'
+type FileObj = {
+  name: string
+  data: string
+}
 function App() {
-  const [count, setCount] = useState(0)
+  
+  const [files, setFiles] = useState<File[]>([])
+  const handleFileChange = (event: any) => {
+    setFiles(Array.from(event.target.files))
+  }
 
+  const readToBase64 = (file: File): Promise<FileObj> => {
+    return new Promise((resolve, reject) => {
+      const reader =new FileReader()
+      reader.onload = e => {
+        if (!e.target) {
+          reject(e)
+          return
+        }
+        const result = e.target.result as string;
+        resolve({
+          data: result.split(",")[1], 
+          name: file.name
+        })
+      }
+
+      reader.readAsDataURL(file)
+    })
+    
+  }
+
+  const handleSave = () => {
+    const zip = new jszip()
+    const filePromises = files.map(file => {
+      return readToBase64(file)
+    })
+
+    Promise.all(filePromises)
+      .then(files => {
+        files.forEach(file => {
+          console.log(file)
+          zip.file(file.name, file.data, {base64: true})
+        })
+      })
+      .then(() => {
+        return zip.generateAsync({type: 'blob'})
+      })
+      .then(blobContent => {
+        saveAs(blobContent,"xx.zip")
+      })
+  }
   return (
     <>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <input type="file" multiple onChange={handleFileChange} />
+        {
+          files.length ? <button onClick={handleSave}>压缩</button> : null
+        }
+        
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
   )
 }
