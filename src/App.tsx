@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import './App.css'
 import { saveAs } from 'file-saver'
-
+import imgZipWorker from './worker?worker'
 function App() {
-  const worker = new Worker('worker.js');
+  const worker = new imgZipWorker()
   
   const [files, setFiles] = useState<File[]>([])
 
