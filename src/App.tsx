@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import { saveAs } from 'file-saver'
+// https://v3.vitejs.dev/guide/features.html#import-with-query-suffixes
 import imgZipWorker from './worker?worker'
 function App() {
   const worker = new imgZipWorker()
@@ -34,7 +35,7 @@ function App() {
   return (
     <>
       <div>
-        <input type="file" multiple onChange={handleFileChange} />
+        <input type="file" multiple onChange={handleFileChange} accept=".jpg,.jpeg" />
         {files.length ? <button onClick={handleSave}> {loading ? '处理中' : '压缩'}</button> : null}
       </div>
     </>
